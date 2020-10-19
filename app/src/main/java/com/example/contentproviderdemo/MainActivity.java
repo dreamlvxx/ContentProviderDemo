@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private TextView add_data;
 
+    private int counter = 0;
+    private int counter1 = 1001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,42 +41,59 @@ public class MainActivity extends AppCompatActivity {
         add_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertValue();
             }
         });
 
-        loaderManager = LoaderManager.getInstance(this);
-        cursorAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.activity_list_item,
-                null,
-                new String[]{"name"},
-                new int[]{android.R.id.text1},
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        loaderManager.initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-            @NonNull
-            @Override
-            public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-                return new PeopleLoader(MainActivity.this);
-            }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (counter < 1000){
+//                    insertValue(counter);
+//                    counter ++;
+//                }
+//            }
+//        }).start();
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (counter1 < 2000){
+//                    insertValue(counter1);
+//                }
+//            }
+//        }).start();
 
-            @Override
-            public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-                Log.e("xxx", "onLoadFinished: execute");
-                cursorAdapter.swapCursor(data);
-            }
-
-            @Override
-            public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-                Log.e("xxx", "onLoaderReset: execute");
-                cursorAdapter.swapCursor(null);
-            }
-        });
+//        loaderManager = LoaderManager.getInstance(this);
+//        cursorAdapter = new SimpleCursorAdapter(this,
+//                android.R.layout.activity_list_item,
+//                null,
+//                new String[]{"name"},
+//                new int[]{android.R.id.text1},
+//                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+//        loaderManager.initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+//            @NonNull
+//            @Override
+//            public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+//                return new PeopleLoader(MainActivity.this);
+//            }
+//
+//            @Override
+//            public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+//                Log.e("xxx", "onLoadFinished: execute");
+//                cursorAdapter.swapCursor(data);
+//            }
+//
+//            @Override
+//            public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+//                Log.e("xxx", "onLoaderReset: execute");
+//                cursorAdapter.swapCursor(null);
+//            }
+//        });
 
     }
 
-    private void insertValue() {
+    private void insertValue(int id) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id",0);
         contentValues.put("name","peter");
         getContentResolver().insert(STUDENT_URI,contentValues);
     }

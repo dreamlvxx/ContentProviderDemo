@@ -8,6 +8,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public class PeopleContentProvider extends ContentProvider {
 
@@ -29,7 +30,8 @@ public class PeopleContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        sqLiteDatabase = new DBOpenHelper(context).getWritableDatabase();
+        sqLiteDatabase = new DBOpenHelper(getContext()).getWritableDatabase();
+        context = getContext();
         return true;
     }
 
@@ -65,18 +67,24 @@ public class PeopleContentProvider extends ContentProvider {
         int uriType = URI_MATCHER.match(uri);
         long row;
 
+        Log.e("xxx", "insert: start");
         switch (uriType) {
             case PEOPLE_TABLE_CODE:
+                if (sqLiteDatabase == null || !sqLiteDatabase.isOpen()){
+                    sqLiteDatabase = new DBOpenHelper(getContext()).getWritableDatabase();
+                }
                 row = sqLiteDatabase.insert(DBOpenHelper.TABLE_PEOPEL_NAME,null, values);
+                Log.e("xxx", "insert: finish");
+                sqLiteDatabase.close();
                 break;
             default:
                 throw new IllegalArgumentException("UnSupport Uri : " + uri);
         }
 
-        if(row > -1) {
-            context.getContentResolver().notifyChange(NOTIFY_URI,null);
-            return ContentUris.withAppendedId(uri, row);
-        }
+//        if(row > -1) {
+//            context.getContentResolver().notifyChange(NOTIFY_URI,null);
+//            return ContentUris.withAppendedId(uri, row);
+//        }
         return null;
     }
 
